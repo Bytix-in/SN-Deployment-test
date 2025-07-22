@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -72,11 +74,11 @@ export async function POST(request: NextRequest) {
     // Generate invoice number
     const invoiceNumber = `INV-${Date.now()}-${order_id.slice(0, 8).toUpperCase()}`
 
-    // Calculate tax (assuming 18% GST for India)
+    // Calculate tax breakdown (assuming 18% GST is included in the order total)
     const taxRate = 0.18
-    const subtotal = order.total_amount
-    const taxAmount = subtotal * taxRate
-    const totalWithTax = subtotal + taxAmount
+    const totalWithTax = order.total_amount // This is what customer actually paid
+    const subtotal = totalWithTax / (1 + taxRate) // Calculate pre-tax amount
+    const taxAmount = totalWithTax - subtotal // Calculate tax portion
 
     // Create invoice record
     const invoiceData = {
