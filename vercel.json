@@ -10,6 +10,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "ignoreCommand": "echo 'Ignoring build errors'",
+
   "installCommand": "npm install"
 }
